@@ -6,123 +6,143 @@
     <title>Math Fun Challenge - Petualangan Numerasi</title>
     <style>
         :root {
-            --primary-blue: #1b4d8e;
-            --accent-yellow: #ffcc00;
-            --bg-cream: #f4f7f6;
+            --primary-green: #2e7d32;
+            --accent-green: #4caf50;
+            --bright-yellow: #ffb300;
+            --bg-soft-gradient: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 50%, #fff9c4 100%);
             --card-bg: #ffffff;
-            --text-dark: #333333;
+            --text-dark: #2c3e50;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-cream);
+            background: var(--bg-soft-gradient);
+            background-attachment: fixed;
             color: var(--text-dark);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
         .container {
             width: 100%;
             max-width: 800px;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.15);
             overflow: hidden;
-            padding: 25px;
+            padding: 30px;
             box-sizing: border-box;
+            border: 3px solid #c8e6c9;
         }
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 12px;
-            margin-bottom: 15px;
+            border-bottom: 2px solid #e0f2f1;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
-        h2 { margin: 0; color: var(--primary-blue); font-size: 20px; }
+        h2 { margin: 0; color: var(--primary-green); font-size: 22px; }
         .btn {
-            background-color: var(--accent-yellow);
-            color: #333;
+            background-color: var(--bright-yellow);
+            color: #212121;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-weight: bold;
-            border-radius: 8px;
+            font-size: 15px;
+            border-radius: 10px;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3);
             transition: 0.2s;
         }
-        .btn:hover { background-color: #e6b800; }
+        .btn:hover { background-color: #ffa000; transform: translateY(-2px); }
         .screen { display: none; }
         .screen.active { display: block; }
         
         /* Form & Avatar */
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 20px; }
+        label { color: #388e3c; font-weight: bold; }
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid #a5d6a7;
+            border-radius: 10px;
             font-size: 16px;
             box-sizing: border-box;
+            background: #f1f8e9;
+            color: #333;
         }
-        input[type="text"]::placeholder { color: #999999; }
-        .avatar-grid { display: flex; gap: 10px; margin-top: 8px; }
-        .avatar-option {
-            font-size: 28px;
-            padding: 8px;
-            border: 2px solid #ddd;
-            border-radius: 50%;
-            cursor: pointer;
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-green);
             background: #fff;
         }
-        .avatar-option.selected { border-color: var(--primary-blue); background: #e1ecfd; }
+        input[type="text"]::placeholder { color: #81c784; }
+        
+        .avatar-grid { display: flex; gap: 12px; margin-top: 10px; }
+        .avatar-option {
+            font-size: 32px;
+            padding: 10px;
+            border: 2px solid #c8e6c9;
+            border-radius: 50%;
+            cursor: pointer;
+            background: #f9fbe7;
+            transition: 0.2s;
+        }
+        .avatar-option:hover { background: #f1f8e9; transform: scale(1.05); }
+        .avatar-option.selected { border-color: var(--primary-green); background: #c8e6c9; box-shadow: 0 0 10px rgba(76, 175, 80, 0.4); }
 
         /* Peta Level */
         .map-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 15px;
             margin-top: 15px;
         }
         .level-card {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
+            background: #f1f8e9;
+            border: 2px solid #c8e6c9;
+            border-radius: 12px;
+            padding: 16px;
             text-align: left;
-        }
-        .level-card.unlocked { border-color: var(--primary-blue); background: #fff; }
-        .level-card h4 { margin: 0 0 5px 0; color: var(--primary-blue); }
-        .level-card p { font-size: 12px; color: #666; margin: 0 0 10px 0; }
-
-        /* Quiz UI */
-        .quiz-header { display: flex; justify-content: space-between; font-size: 14px; color: #666; margin-bottom: 8px; }
-        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary-blue); width: 0%; transition: width 0.3s; }
-        .question-card { background: #f0f4f9; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .option-btn {
-            background: #fff;
-            border: 2px solid #d0d7de;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 15px;
-            cursor: pointer;
             transition: 0.2s;
         }
-        .option-btn:hover:not(:disabled) { background: #eef2f8; border-color: var(--primary-blue); }
-        .option-btn.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .option-btn.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        .level-card.unlocked { border-color: var(--accent-green); background: #ffffff; box-shadow: 0 4px 12px rgba(76,175,80,0.1); }
+        .level-card h4 { margin: 0 0 5px 0; color: var(--primary-green); font-size: 16px; }
+        .level-card p { font-size: 12px; color: #555; margin: 0 0 12px 0; }
+
+        /* Quiz UI */
+        .quiz-header { display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 8px; font-weight: bold; }
+        .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.3s; }
+        .question-card { background: #e8f5e9; border: 1px solid #c8e6c9; padding: 18px; border-radius: 12px; margin-bottom: 20px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #a5d6a7;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #2c3e50;
+        }
+        .option-btn:hover:not(:disabled) { background: #f1f8e9; border-color: var(--primary-green); }
+        .option-btn.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; font-weight: bold; }
+        .option-btn.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; font-weight: bold; }
 
         /* Feedback Box */
         .feedback-box {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 10px;
+            background: #fff8e1;
+            border: 2px solid #ffe082;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
             display: none;
         }
         .feedback-box.show { display: block; }
@@ -134,19 +154,19 @@
     <!-- SCREEN 1: LOGIN -->
     <div id="screen-welcome" class="screen active">
         <header>
-            <h2>✨ Math Fun Challenge</h2>
+            <h2>🌿 Math Fun Challenge</h2>
             <button class="btn" onclick="alert('Mode Guru Aktif')">Mode Guru</button>
         </header>
-        <div style="background: var(--primary-blue); color: white; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-            <h3 style="margin-top:0;">PETUALANGAN NUMERASI KELAS VI</h3>
-            <p style="margin:0; font-size: 14px;">Matematika jadi seru! Jelajahi 5 level, pecahkan tantangan, dan raih sertifikat juara.</p>
+        <div style="background: linear-gradient(135deg, #2e7d32, #4caf50); color: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(46,125,50,0.3);">
+            <h3 style="margin-top:0; font-size: 20px;">PETUALANGAN NUMERASI KELAS VI</h3>
+            <p style="margin:0; font-size: 14px; opacity: 0.95;">Matematika jadi seru! Jelajahi 5 level, pecahkan tantangan, dan raih sertifikat juara.</p>
         </div>
         <div class="form-group">
-            <label><strong>Nama panggilanmu</strong></label>
+            <label>Nama panggilanmu</label>
             <input type="text" id="username" placeholder="Contoh: Rasyid">
         </div>
         <div class="form-group">
-            <label><strong>Pilih teman petualangan</strong></label>
+            <label>Pilih teman petualangan</label>
             <div class="avatar-grid">
                 <div class="avatar-option selected" onclick="selectAvatar(this)">🦊</div>
                 <div class="avatar-option" onclick="selectAvatar(this)">🐼</div>
@@ -154,18 +174,18 @@
                 <div class="avatar-option" onclick="selectAvatar(this)">🐨</div>
             </div>
         </div>
-        <button class="btn" style="width: 100%; padding: 12px; font-size: 16px;" onclick="goToMap()">Mulai Petualangan ➔</button>
+        <button class="btn" style="width: 100%; padding: 14px; font-size: 16px; margin-top: 10px;" onclick="goToMap()">Mulai Petualangan ➔</button>
     </div>
 
     <!-- SCREEN 2: PETA LEVEL -->
     <div id="screen-map" class="screen">
         <header>
             <div>
-                <h2 style="margin:0;" id="map-title">Pilih Tujuanmu</h2>
-                <p style="margin:2px 0 0 0; font-size: 13px; color:#555;" id="player-greeting">Halo, Rasyid! Mau menjelajah ke mana?</p>
+                <h2 style="margin:0;">Pilih Tujuanmu</h2>
+                <p style="margin:4px 0 0 0; font-size: 13px; color:#555;" id="player-greeting">Halo, Rasyid! Mau menjelajah ke mana?</p>
             </div>
             <div>
-                <span style="background:#eef2f8; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px; color:var(--primary-blue);">⭐ Poin: <span id="total-score">0</span></span>
+                <span style="background:#e8f5e9; border: 2px solid #a5d6a7; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:14px; color:var(--primary-green);">⭐ Poin: <span id="total-score">0</span></span>
             </div>
         </header>
 
@@ -175,8 +195,8 @@
     <!-- SCREEN 3: QUIZ GAMEPLAY -->
     <div id="screen-quiz" class="screen">
         <header>
-            <span id="quiz-category" style="font-weight: bold; color: var(--primary-blue);">Level</span>
-            <span id="player-status" style="font-size: 13px;">❤️ Nyawa: 3</span>
+            <span id="quiz-category" style="font-weight: bold; color: var(--primary-green); font-size: 16px;">Level</span>
+            <span id="player-status" style="font-size: 14px; font-weight: bold; color: #d32f2f;">❤️ Nyawa: 3</span>
         </header>
         <div class="quiz-header">
             <span id="question-number">SOAL 1 DARI 5</span>
@@ -187,25 +207,25 @@
         </div>
 
         <div class="question-card">
-            <p id="question-type" style="font-size: 11px; font-weight: bold; color: #555; margin-top:0;">PENALARAN</p>
-            <p id="question-text" style="font-size: 15px; font-weight: 500; margin-bottom:0;">Memuat soal...</p>
+            <p id="question-type" style="font-size: 12px; font-weight: bold; color: #2e7d32; margin-top:0; text-transform: uppercase; letter-spacing: 0.5px;">PENALARAN</p>
+            <p id="question-text" style="font-size: 16px; font-weight: 500; margin-bottom:0; color: #2c3e50; line-height: 1.5;">Memuat soal...</p>
         </div>
 
         <div class="options-grid" id="options-container"></div>
 
         <!-- Feedback & Pembahasan -->
         <div id="feedback-box" class="feedback-box">
-            <p id="feedback-msg" style="font-weight: bold; margin: 0 0 4px 0;"></p>
-            <p id="feedback-desc" style="margin: 0; font-size: 13px;"></p>
-            <button class="btn" style="margin-top: 10px; padding: 8px 16px;" onclick="nextQuestion()">Soal Berikutnya ➔</button>
+            <p id="feedback-msg" style="font-weight: bold; margin: 0 0 6px 0; font-size: 15px;"></p>
+            <p id="feedback-desc" style="margin: 0; font-size: 14px; color: #444; line-height: 1.4;"></p>
+            <button class="btn" style="margin-top: 12px; padding: 10px 20px;" onclick="nextQuestion()">Soal Berikutnya ➔</button>
         </div>
     </div>
 
     <!-- SCREEN 4: SELESAI LEVEL / HASIL -->
-    <div id="screen-result" class="screen" style="text-align: center; padding: 20px;">
-        <h2>🎉 Level Selesai!</h2>
-        <p id="result-text" style="font-size: 16px; margin: 15px 0;"></p>
-        <button class="btn" onclick="backToMap()">Kembali ke Peta Level 🗺️</button>
+    <div id="screen-result" class="screen" style="text-align: center; padding: 25px;">
+        <h2 style="color: var(--primary-green); font-size: 24px;">🎉 Level Selesai!</h2>
+        <p id="result-text" style="font-size: 17px; margin: 20px 0; color: #333; line-height: 1.6;"></p>
+        <button class="btn" style="padding: 12px 25px;" onclick="backToMap()">Kembali ke Peta Level 🗺️</button>
     </div>
 </div>
 
@@ -305,7 +325,7 @@
             card.className = `level-card ${isUnlocked ? 'unlocked' : ''}`;
             
             let statusText = isUnlocked ? "🟢 Siap dimainkan" : "🔒 Terkunci";
-            let actionBtn = isUnlocked ? `<button class="btn" style="padding:6px 12px; font-size:13px;" onclick="startLevel(${idx})">Mainkan Level</button>` : `<span style="font-size:12px; color:#888;">Selesaikan level sebelumnya</span>`;
+            let actionBtn = isUnlocked ? `<button class="btn" style="padding:8px 14px; font-size:13px;" onclick="startLevel(${idx})">Mainkan Level</button>` : `<span style="font-size:12px; color:#888;">Selesaikan level sebelumnya</span>`;
 
             card.innerHTML = `
                 <h4>${lvl.title}</h4>
