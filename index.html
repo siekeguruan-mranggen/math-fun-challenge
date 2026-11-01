@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Fun Challenge - Petualangan Numerasi</title>
+    <style>
+        :root {
+            --primary-blue: #1b4d8e;
+            --accent-yellow: #ffcc00;
+            --bg-cream: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        h2 { margin: 0; color: var(--primary-blue); font-size: 20px; }
+        .btn {
+            background-color: var(--accent-yellow);
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { background-color: #e6b800; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Form & Avatar */
+        .form-group { margin-bottom: 15px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input[type="text"]::placeholder { color: #999999; }
+        .avatar-grid { display: flex; gap: 10px; margin-top: 8px; }
+        .avatar-option {
+            font-size: 28px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            background: #fff;
+        }
+        .avatar-option.selected { border-color: var(--primary-blue); background: #e1ecfd; }
+
+        /* Peta Level */
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .level-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+        }
+        .level-card.unlocked { border-color: var(--primary-blue); background: #fff; }
+        .level-card h4 { margin: 0 0 5px 0; color: var(--primary-blue); }
+        .level-card p { font-size: 12px; color: #666; margin: 0 0 10px 0; }
+
+        /* Quiz UI */
+        .quiz-header { display: flex; justify-content: space-between; font-size: 14px; color: #666; margin-bottom: 8px; }
+        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 15px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-blue); width: 0%; transition: width 0.3s; }
+        .question-card { background: #f0f4f9; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .option-btn {
+            background: #fff;
+            border: 2px solid #d0d7de;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-btn:hover:not(:disabled) { background: #eef2f8; border-color: var(--primary-blue); }
+        .option-btn.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .option-btn.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+
+        /* Feedback Box */
+        .feedback-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        .feedback-box.show { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-welcome" class="screen active">
+        <header>
+            <h2>✨ Math Fun Challenge</h2>
+            <button class="btn" onclick="alert('Mode Guru Aktif')">Mode Guru</button>
+        </header>
+        <div style="background: var(--primary-blue); color: white; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+            <h3 style="margin-top:0;">PETUALANGAN NUMERASI KELAS VI</h3>
+            <p style="margin:0; font-size: 14px;">Matematika jadi seru! Jelajahi 5 level, pecahkan tantangan, dan raih sertifikat juara.</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Nama panggilanmu</strong></label>
+            <input type="text" id="username" placeholder="Contoh: Rasyid">
+        </div>
+        <div class="form-group">
+            <label><strong>Pilih teman petualangan</strong></label>
+            <div class="avatar-grid">
+                <div class="avatar-option selected" onclick="selectAvatar(this)">🦊</div>
+                <div class="avatar-option" onclick="selectAvatar(this)">🐼</div>
+                <div class="avatar-option" onclick="selectAvatar(this)">🐸</div>
+                <div class="avatar-option" onclick="selectAvatar(this)">🐨</div>
+            </div>
+        </div>
+        <button class="btn" style="width: 100%; padding: 12px; font-size: 16px;" onclick="goToMap()">Mulai Petualangan ➔</button>
+    </div>
+
+    <!-- SCREEN 2: PETA LEVEL -->
+    <div id="screen-map" class="screen">
+        <header>
+            <div>
+                <h2 style="margin:0;" id="map-title">Pilih Tujuanmu</h2>
+                <p style="margin:2px 0 0 0; font-size: 13px; color:#555;" id="player-greeting">Halo, Rasyid! Mau menjelajah ke mana?</p>
+            </div>
+            <div>
+                <span style="background:#eef2f8; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:13px; color:var(--primary-blue);">⭐ Poin: <span id="total-score">0</span></span>
+            </div>
+        </header>
+
+        <div class="map-grid" id="level-list-container"></div>
+    </div>
+
+    <!-- SCREEN 3: QUIZ GAMEPLAY -->
+    <div id="screen-quiz" class="screen">
+        <header>
+            <span id="quiz-category" style="font-weight: bold; color: var(--primary-blue);">Level</span>
+            <span id="player-status" style="font-size: 13px;">❤️ Nyawa: 3</span>
+        </header>
+        <div class="quiz-header">
+            <span id="question-number">SOAL 1 DARI 5</span>
+            <span id="timer">⏱️ 30 dtk</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="question-card">
+            <p id="question-type" style="font-size: 11px; font-weight: bold; color: #555; margin-top:0;">PENALARAN</p>
+            <p id="question-text" style="font-size: 15px; font-weight: 500; margin-bottom:0;">Memuat soal...</p>
+        </div>
+
+        <div class="options-grid" id="options-container"></div>
+
+        <!-- Feedback & Pembahasan -->
+        <div id="feedback-box" class="feedback-box">
+            <p id="feedback-msg" style="font-weight: bold; margin: 0 0 4px 0;"></p>
+            <p id="feedback-desc" style="margin: 0; font-size: 13px;"></p>
+            <button class="btn" style="margin-top: 10px; padding: 8px 16px;" onclick="nextQuestion()">Soal Berikutnya ➔</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: SELESAI LEVEL / HASIL -->
+    <div id="screen-result" class="screen" style="text-align: center; padding: 20px;">
+        <h2>🎉 Level Selesai!</h2>
+        <p id="result-text" style="font-size: 16px; margin: 15px 0;"></p>
+        <button class="btn" onclick="backToMap()">Kembali ke Peta Level 🗺️</button>
+    </div>
+</div>
+
+<script>
+    let currentAvatar = "🦊";
+    let playerName = "Rasyid";
+    let totalScore = 0;
+    let unlockedLevel = 1;
+    
+    let currentLevelIdx = 0;
+    let currentQIdx = 0;
+    let currentLives = 3;
+
+    const levelsData = [
+        {
+            title: "1. Pasar Ceria",
+            desc: "Operasi bilangan, bilangan bulat, FPB, dan KPK.",
+            questions: [
+                { type: "PENALARAN", text: "Dito punya Rp30.000. Ia membeli 2 buku masing-masing Rp8.000 dan ingin membeli stiker seharga Rp3.000 per lembar. Paling banyak berapa lembar stiker yang dapat dibeli?", options: ["4", "5", "3", "6"], correct: 0, motivWrong: "Belum tepat, yuk pahami lagi!", motivCorrect: "Hebat, jawabanmu benar!", expl: "Sisa uang Rp14.000; 14.000 ÷ 3.000 = 4 lembar (sisa Rp2.000)." },
+                { type: "OPERASI HITUNG", text: "Hasil dari -15 + 25 × (-2) adalah...", options: ["-65", "20", "-50", "35"], correct: 0, motivWrong: "Ingat perkalian didahulukan!", motivCorrect: "Mantap sekali!", expl: "25 × (-2) = -50. Lalu -15 + (-50) = -65." },
+                { type: "FPB & KPK", text: "KPK dari 12 dan 18 adalah...", options: ["36", "24", "72", "6"], correct: 0, motivWrong: "Coba cari kelipatan persekutuan terkecil.", motivCorrect: "Benar sekali!", expl: "Kelipatan 12: 12, 24, 36... Kelipatan 18: 18, 36... KPK-nya 36." },
+                { type: "BILANGAN BULAT", text: "Suhu di dalam kulkas -4°C. Saat dimatikan, suhunya naik 2°C setiap 5 menit. Berapa suhu setelah 15 menit?", options: ["2°C", "0°C", "-2°C", "6°C"], correct: 0, motivWrong: "Hitung kenaikan suhunya secara bertahap.", motivCorrect: "Luar biasa!", expl: "Kenaikan = (15/5) × 2°C = 6°C. Suhu akhir = -4°C + 6°C = 2°C." },
+                { type: "OPERASI HITUNG", text: "Ibu membeli 4,5 kg beras, lalu membeli lagi 2 1/4 kg. Berapa kg total beras ibu?", options: ["6,75 kg", "6,50 kg", "7,00 kg", "5,75 kg"], correct: 0, motivWrong: "Ubah pecahan campuran menjadi desimal.", motivCorrect: "Tepat sekali!", expl: "4,5 + 2,25 = 6,75 kg." }
+            ]
+        },
+        {
+            title: "2. Kota Geometri",
+            desc: "Keliling, luas, volume, dan satuan.",
+            questions: [
+                { type: "LUAS & KELILING", text: "Sebuah persegi panjang memiliki panjang 15 cm dan lebar 10 cm. Berapa kelilingnya?", options: ["50 cm", "150 cm", "25 cm", "40 cm"], correct: 0, motivWrong: "Rumus keliling = 2 × (panjang + lebar).", motivCorrect: "Hebat!", expl: "Keliling = 2 × (15 + 10) = 2 × 25 = 50 cm." },
+                { type: "VOLUME", text: "Volume sebuah kubus dengan panjang rusuk 8 cm adalah...", options: ["512 cm³", "64 cm³", "256 cm³", "384 cm³"], correct: 0, motivWrong: "Rumus volume kubus = r × r × r.", motivCorrect: "Sempurna!", expl: "Volume = 8 × 8 × 8 = 512 cm³." },
+                { type: "LUAS LINGKARAN", text: "Berapa luas lingkaran dengan jari-jari 7 cm? (π = 22/7)", options: ["154 cm²", "44 cm²", "308 cm²", "88 cm²"], correct: 0, motivWrong: "Gunakan rumus π × r².", motivCorrect: "Pandai sekali!", expl: "Luas = (22/7) × 7 × 7 = 154 cm²." },
+                { type: "VOLUME", text: "Sebuah balok berukuran 10 cm × 5 cm × 4 cm. Volumenya adalah...", options: ["200 cm³", "190 cm³", "100 cm³", "150 cm³"], correct: 0, motivWrong: "Kalikan panjang, lebar, dan tinggi.", motivCorrect: "Benar!", expl: "Volume = 10 × 5 × 4 = 200 cm³." },
+                { type: "SATUAN", text: "2 liter + 1.500 ml = ... ml", options: ["3.500 ml", "3.000 ml", "2.500 ml", "2.150 ml"], correct: 0, motivWrong: "1 liter = 1.000 ml.", motivCorrect: "Hebat!", expl: "2 liter = 2.000 ml. 2.000 + 1.500 = 3.500 ml." }
+            ]
+        },
+        {
+            title: "3. Pulau Pecahan",
+            desc: "Pecahan, desimal, persen, perbandingan, dan skala.",
+            questions: [
+                { type: "PERSEN", text: "Bentuk pecahan biasa paling sederhana dari 75% adalah...", options: ["3/4", "1/2", "2/3", "4/5"], correct: 0, motivWrong: "75% artinya 75/100, sederhanakan.", motivCorrect: "Pintar!", expl: "75/100 dibagi 25 menjadi 3/4." },
+                { type: "PECAHAN", text: "Hasil dari 3/4 + 1/2 adalah...", options: ["5/4 (1 1/4)", "4/6", "2/3", "4/4"], correct: 0, motivWrong: "Samakan penyebutnya terlebih dahulu.", motivCorrect: "Tepat!", expl: "3/4 + 2/4 = 5/4 atau 1 1/4." },
+                { type: "SKALA", text: "Jarak pada peta 5 cm dengan skala 1 : 200.000. Berapa jarak sebenarnya?", options: ["10 km", "1 km", "100 km", "5 km"], correct: 0, motivWrong: "Jarak sebenarnya = Jarak peta × skala.", motivCorrect: "Hebat!", expl: "5 × 200.000 = 1.000.000 cm = 10 km." },
+                { type: "PERBANDINGAN", text: "Perbandingan uang Ani dan Budi 3 : 5. Jika uang Budi Rp25.000, berapa uang Ani?", options: ["Rp15.000", "Rp10.000", "Rp20.000", "Rp30.000"], correct: 0, motivWrong: "Gunakan perbandingan (3/5) × 25.000.", motivCorrect: "Benar!", expl: "(3/5) × 25.000 = Rp15.000." },
+                { type: "DESIMAL", text: "Hasil dari 0,6 × 0,4 adalah...", options: ["0,24", "2,4", "0,024", "24"], correct: 0, motivWrong: "Hitung perkalian desimal dengan teliti.", motivCorrect: "Mantap!", expl: "6/10 × 4/10 = 24/100 = 0,24." }
+            ]
+        },
+        {
+            title: "4. Lembah Data",
+            desc: "Membaca tabel, rata-rata, median, dan modus.",
+            questions: [
+                { type: "RATA-RATA", text: "Nilai ulangan matematika: 70, 80, 90, 70, 80. Berapa rata-ratanya?", options: ["78", "75", "80", "82"], correct: 0, motivWrong: "Jumlahkan semua nilai lalu bagi banyaknya data.", motivCorrect: "Luar biasa!", expl: "Jumlah = 390. Rata-rata = 390 / 5 = 78." },
+                { type: "MODUS", text: "Data nilai siswa: 6, 7, 8, 8, 9, 7, 8, 10. Modus dari data tersebut adalah...", options: ["8", "7", "9", "6"], correct: 0, motivWrong: "Modus adalah nilai yang paling sering muncul.", motivCorrect: "Tepat!", expl: "Angka 8 muncul sebanyak 3 kali (paling sering)." },
+                { type: "MEDIAN", text: "Median dari data: 5, 7, 8, 9, 10 adalah...", options: ["8", "7", "7,5", "9"], correct: 0, motivWrong: "Median adalah nilai tengah setelah diurutkan.", motivCorrect: "Hebat!", expl: "Data sudah urut, nilai tengahnya adalah 8." },
+                { type: "STATISTIKA", text: "Jika rata-rata 4 anak adalah 75, dan ditambah 1 anak nilainya 85, berapa rata-rata baru?", options: ["77", "76", "78", "80"], correct: 0, motivWrong: "Hitung total nilai seluruh anak.", motivCorrect: "Benar!", expl: "Total lama = 4 × 75 = 300. Total baru = 300 + 85 = 385. Rata-rata = 385/5 = 77." },
+                { type: "TABEL", text: "Dari tabel tinggi badan, siswa tinggi 130 cm ada 4 orang, 135 cm ada 6 orang. Berapa jumlah seluruh siswa?", options: ["10 orang", "8 orang", "12 orang", "14 orang"], correct: 0, motivWrong: "Jumlahkan frekuensi setiap kelompok tinggi badan.", motivCorrect: "Pintar!", expl: "4 + 6 = 10 orang." }
+            ]
+        },
+        {
+            title: "5. Menara Nalar",
+            desc: "Menggabungkan strategi matematika sehari-hari.",
+            questions: [
+                { type: "PENALARAN", text: "Bus berangkat pukul 08.30 dan menempuh perjalanan selama 2 jam 45 menit. Pukul berapa bus tiba?", options: ["11.15", "11.00", "10.45", "11.30"], correct: 0, motivWrong: "Tambahkan jam dan menit secara terpisah.", motivCorrect: "Hebat!", expl: "08.30 + 2 jam = 10.30. 10.30 + 45 menit = 11.15." },
+                { type: "PENALARAN", text: "Budi menabung setiap 4 hari sekali, Andi setiap 6 hari sekali. Mereka menabung bersama pada hari Minggu. Hari apa mereka akan menabung bersama lagi?", options: ["Rabu", "Selasa", "Kamis", "Senin"], correct: 0, motivWrong: "Cari KPK dari 4 dan 6 terlebih dahulu.", motivCorrect: "Luar biasa!", expl: "KPK dari 4 dan 6 adalah 12 hari. Minggu + 12 hari = Rabu." },
+                { type: "PENALARAN", text: "Sebuah wadah berisi air 3/4 bagian. Jika ditambah 5 liter, wadah menjadi penuh. Berapa kapasitas total wadah?", options: ["20 liter", "15 liter", "10 liter", "25 liter"], correct: 0, motivWrong: "Bagian yang kosong adalah 1 - 3/4 = 1/4 bagian.", motivCorrect: "Tepat sekali!", expl: "1/4 bagian = 5 liter. Kapasitas penuh = 5 × 4 = 20 liter." },
+                { type: "PENALARAN", text: "Harga sebuah baju Rp150.000 mendapat diskon 20%. Berapa harga yang harus dibayar?", options: ["Rp120.000", "Rp130.000", "Rp100.000", "Rp110.000"], correct: 0, motivWrong: "Hitung besaran diskon: 20% dari 150.000.", motivCorrect: "Mantap!", expl: "Diskon = 20/100 × 150.000 = Rp30.000. Harga bayar = 150.000 - 30.000 = Rp120.000." },
+                { type: "PENALARAN", text: "Pak Tani memanen 2 kuintal jagung. Sebanyak 75 kg dijual ke pasar dan 50.000 gram diberikan ke tetangga. Sisa jagung Pak Tani adalah...", options: ["75 kg", "50 kg", "100 kg", "125 kg"], correct: 0, motivWrong: "Samakan semua satuan ke dalam kilogram (kg).", motivCorrect: "Sempurna! Kamu Juara!", expl: "2 kuintal = 200 kg. Dijual = 75 kg. Diberikan = 50 kg (50.000g). Sisa = 200 - 75 - 50 = 75 kg." }
+            ]
+        }
+    ];
+
+    function selectAvatar(el) {
+        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        currentAvatar = el.innerText;
+    }
+
+    function goToMap() {
+        const inputVal = document.getElementById('username').value.trim();
+        if(inputVal !== "") playerName = inputVal;
+        
+        document.getElementById('player-greeting').innerText = `Halo, ${playerName}! Mau menjelajah ke mana?`;
+        document.getElementById('total-score').innerText = totalScore;
+        
+        renderMap();
+        document.getElementById('screen-welcome').classList.remove('active');
+        document.getElementById('screen-map').classList.add('active');
+    }
+
+    function renderMap() {
+        const container = document.getElementById('level-list-container');
+        container.innerHTML = '';
+
+        levelsData.forEach((lvl, idx) => {
+            const isUnlocked = (idx + 1) <= unlockedLevel;
+            const card = document.createElement('div');
+            card.className = `level-card ${isUnlocked ? 'unlocked' : ''}`;
+            
+            let statusText = isUnlocked ? "🟢 Siap dimainkan" : "🔒 Terkunci";
+            let actionBtn = isUnlocked ? `<button class="btn" style="padding:6px 12px; font-size:13px;" onclick="startLevel(${idx})">Mainkan Level</button>` : `<span style="font-size:12px; color:#888;">Selesaikan level sebelumnya</span>`;
+
+            card.innerHTML = `
+                <h4>${lvl.title}</h4>
+                <p>${lvl.desc}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:11px; font-weight:bold;">${statusText}</span>
+                    ${actionBtn}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function startLevel(levelIdx) {
+        currentLevelIdx = levelIdx;
+        currentQIdx = 0;
+        currentLives = 3;
+
+        document.getElementById('screen-map').classList.remove('active');
+        document.getElementById('screen-quiz').classList.add('active');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const lvl = levelsData[currentLevelIdx];
+        const q = lvl.questions[currentQIdx];
+
+        document.getElementById('quiz-category').innerText = lvl.title;
+        document.getElementById('question-number').innerText = `SOAL ${currentQIdx + 1} DARI 5`;
+        document.getElementById('question-type').innerText = q.type;
+        document.getElementById('question-text').innerText = q.text;
+        document.getElementById('player-status').innerText = `❤️ Nyawa: ${currentLives}`;
+        
+        let progress = ((currentQIdx) / 5) * 100;
+        document.getElementById('progress-fill').style.width = progress + '%';
+        
+        document.getElementById('feedback-box').classList.remove('show');
+
+        const optContainer = document.getElementById('options-container');
+        optContainer.innerHTML = '';
+        
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => selectAnswer(idx, btn);
+            optContainer.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(selectedIdx, btnElement) {
+        const q = levelsData[currentLevelIdx].questions[currentQIdx];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const feedbackDesc = document.getElementById('feedback-desc');
+
+        feedbackBox.classList.add('show');
+
+        if(selectedIdx === q.correct) {
+            btnElement.classList.add('correct');
+            totalScore += 20;
+            feedbackMsg.style.color = "#155724";
+            feedbackMsg.innerText = q.motivCorrect;
+        } else {
+            btnElement.classList.add('wrong');
+            allBtns[q.correct].classList.add('correct');
+            currentLives--;
+            feedbackMsg.style.color = "#721c24";
+            feedbackMsg.innerText = q.motivWrong;
+        }
+
+        feedbackDesc.innerHTML = `<strong>Pembahasan:</strong> ${q.expl}`;
+        document.getElementById('player-status').innerText = `❤️ Nyawa: ${currentLives}`;
+    }
+
+    function nextQuestion() {
+        currentQIdx++;
+        if(currentQIdx < 5 && currentLives > 0) {
+            loadQuestion();
+        } else {
+            if(currentLevelIdx + 1 === unlockedLevel && unlockedLevel < 5) {
+                unlockedLevel++;
+            }
+            document.getElementById('screen-quiz').classList.remove('active');
+            document.getElementById('screen-result').classList.add('active');
+            document.getElementById('result-text').innerHTML = `Keren, <strong>${playerName}</strong>!<br>Kamu telah menyelesaikan <strong>${levelsData[currentLevelIdx].title}</strong>.<br>Total Poin Kamu: <strong>${totalScore}</strong>`;
+        }
+    }
+
+    function backToMap() {
+        document.getElementById('screen-result').classList.remove('active');
+        document.getElementById('screen-map').classList.add('active');
+        document.getElementById('total-score').innerText = totalScore;
+        renderMap();
+    }
+</script>
+
+</body>
+</html>
