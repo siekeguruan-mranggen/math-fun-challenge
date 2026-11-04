@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Fun Challenge - Petualangan Numerasi</title>
+    <title>Math Fun Challenge - Petualangan Numerasi Kelas Sayung</title>
     <style>
         :root {
             --primary-green: #2e7d32;
@@ -44,6 +44,25 @@
             border-bottom: 2px solid #e0f2f1;
             padding-bottom: 15px;
             margin-bottom: 20px;
+        }
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .demak-logo {
+            width: 32px;
+            height: 32px;
+            background: #2e7d32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 2px solid #fff;
         }
         h2 { margin: 0; color: var(--primary-green); font-size: 22px; }
         .btn {
@@ -154,11 +173,14 @@
     <!-- SCREEN 1: LOGIN -->
     <div id="screen-welcome" class="screen active">
         <header>
-            <h2>🌿 Math Fun Challenge</h2>
+            <div class="brand-title">
+                <div class="demak-logo" title="Logo Kabupaten Demak">🛡️</div>
+                <h2>Math Fun Challenge</h2>
+            </div>
             <button class="btn" onclick="alert('Mode Guru Aktif')">Mode Guru</button>
         </header>
         <div style="background: linear-gradient(135deg, #2e7d32, #4caf50); color: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(46,125,50,0.3);">
-            <h3 style="margin-top:0; font-size: 20px;">PETUALANGAN NUMERASI KELAS VI</h3>
+            <h3 style="margin-top:0; font-size: 20px;">PETUALANGAN NUMERASI KELAS SAYUNG</h3>
             <p style="margin:0; font-size: 14px; opacity: 0.95;">Matematika jadi seru! Jelajahi 5 level, pecahkan tantangan, dan raih sertifikat juara.</p>
         </div>
         <div class="form-group">
