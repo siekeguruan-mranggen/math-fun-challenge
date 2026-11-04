@@ -48,21 +48,13 @@
         .brand-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .demak-logo {
-            width: 32px;
-            height: 32px;
-            background: #2e7d32;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            border: 2px solid #fff;
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 6px;
         }
         h2 { margin: 0; color: var(--primary-green); font-size: 22px; }
         .btn {
@@ -174,7 +166,7 @@
     <div id="screen-welcome" class="screen active">
         <header>
             <div class="brand-title">
-                <div class="demak-logo" title="Logo Kabupaten Demak">🛡️</div>
+                <img src="logo_demak.png" alt="Logo Demak" class="demak-logo">
                 <h2>Math Fun Challenge</h2>
             </div>
             <button class="btn" onclick="alert('Mode Guru Aktif')">Mode Guru</button>
